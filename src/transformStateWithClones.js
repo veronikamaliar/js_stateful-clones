@@ -15,16 +15,23 @@ function transformStateWithClones(state, actions) {
 
     switch (action.type) {
       case 'addProperties':
-        addProperties(newState, action.extraData);
+        if (action.extraData && typeof action.extraData === 'object') {
+          addProperties(newState, action.extraData);
+        }
         break;
 
       case 'removeProperties':
-        removeProperties(newState, action.keysToRemove);
+        if (Array.isArray(action.keysToRemove)) {
+          removeProperties(newState, action.keysToRemove);
+        }
         break;
 
       case 'clear':
         clearProperties(newState);
         break;
+
+      default:
+        throw new Error(`Unknown action type: ${action.type}`);
     }
     stateHistory.push(newState);
     currentState = newState;
